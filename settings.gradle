@@ -1,0 +1,8 @@
+include ':rx-receiver'
+//include ':rx-receiver-kotlin'
+include ':rx-receiver-local'
+//include ':rx-receiver-local-kotlin'
+include ':rx2-receiver'
+//include ':rx2-receiver-kotlin'
+include ':rx2-receiver-local'
+//include ':rx2-receiver-local-kotlin'
