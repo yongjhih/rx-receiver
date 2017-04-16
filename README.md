@@ -3,9 +3,9 @@
 [![CircleCI](https://circleci.com/gh/yongjhih/rx-receiver.svg?style=shield)](https://circleci.com/gh/yongjhih/rx-receiver)
 [![codecov](https://codecov.io/gh/yongjhih/rx-receiver/branch/master/graph/badge.svg)](https://codecov.io/gh/yongjhih/rx-receiver)
 
-Support RxJava1/RxJava2
+RxJava1/2 for Android BroadcastReceiver. It's easier to extend for that based on BroadcastReceiver.
 
-Who use:
+Who extend:
 
 * [RxNet](https://github.com/yongjhih/rx-net) (including RxConnectivity/RxWifi)
 * RxTelephony
