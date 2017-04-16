@@ -20,16 +20,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Looper;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Scheduler;
-import io.reactivex.functions.Cancellable;
+import rx.Emitter;
+import rx.Observable;
+import rx.Scheduler;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Cancellable;
 
-import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
+import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
 public class RxReceiverLocal {
     /**
@@ -39,34 +41,36 @@ public class RxReceiverLocal {
      * @return
      */
     @NonNull
+    @CheckResult
     public static Observable<Intent> receives(@NonNull final Context context, @NonNull final IntentFilter intentFilter) {
-        return Observable.create(new ObservableOnSubscribe<Intent>() {
-            @Override public void subscribe(final ObservableEmitter<Intent> emitter) {
+        return Observable.create(new Action1<Emitter<Intent>>() {
+            @Override
+            public void call(final Emitter<Intent> emitter) {
                 final BroadcastReceiver receiver = new BroadcastReceiver() {
                     @Override public void onReceive(Context context, Intent intent) {
                         emitter.onNext(intent);
                     }
                 };
 
-                LocalBroadcastManager.getInstance(context).registerReceiver(receiver, intentFilter);
-
-                emitter.setCancellable(new Cancellable() {
+                emitter.setCancellation(new Cancellable() {
                     @Override
                     public void cancel() throws Exception {
                         if (Looper.getMainLooper() == Looper.myLooper()) {
                             LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
                         } else {
                             final Scheduler.Worker inner = mainThread().createWorker();
-                            inner.schedule(new Runnable() {
-                                @Override public void run() {
+                            inner.schedule(new Action0() {
+                                @Override public void call() {
                                     LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
-                                    inner.dispose();
+                                    inner.unsubscribe();
                                 }
                             });
                         }
                     }
                 });
+
+                LocalBroadcastManager.getInstance(context).registerReceiver(receiver, intentFilter);
             }
-        });
+        }, Emitter.BackpressureMode.BUFFER);
     }
 }

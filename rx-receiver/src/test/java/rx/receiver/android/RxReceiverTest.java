@@ -15,65 +15,58 @@
  */
 package rx.receiver.android;
 
-import android.content.Context;
+import android.app.Application;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import org.assertj.core.api.ThrowableAssert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import io.reactivex.observers.TestObserver;
+import rx.Subscription;
+import rx.observers.TestSubscriber;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Java6Assertions.fail;
+import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
 public class RxReceiverTest {
-    @Test
-    public void testReceivesNull() {
-        //assertThatThrownBy(new ThrowableAssert.ThrowingCallable() {
-        //    @Override
-        //    public void call() throws Throwable {
-        //        RxReceiver.receives(null, null);
-        //    }
-        //}).isInstanceOf(NullPointerException.class);
-
-        //try {
-        //    RxReceiver.receives(null, null);
-        //    fail("No NPE thrown");
-        //} catch (Throwable e) {
-        //    assertThat(e).isInstanceOf(NullPointerException.class);
-        //}
-
-        RxReceiver.receives(null, null).test().assertError(NullPointerException.class);
+    @Test public void createWithNullThrows() {
+        try {
+            //noinspection ResourceType
+            RxReceiver.receives(null, null);
+            fail();
+        } catch (NullPointerException e) {
+            assertThat(e).hasMessage("context == null");
+        }
     }
 
-    @Test
-    public void test() {
-        IntentFilter intentFilter = new IntentFilter("test");
-        Context context = RuntimeEnvironment.application.getApplicationContext();
+    @Test public void subscribe() {
+        IntentFilter intentFilter = new IntentFilter("test_action");
+        Application application = RuntimeEnvironment.application;
 
-        TestObserver<Intent> tester = RxReceiver.receives(context, intentFilter)
-                .test();
-        Intent foobar = new Intent("test").putExtra("foo", "bar");
-        context.sendBroadcast(foobar);
-        tester.assertValues(foobar);
+        TestSubscriber<Intent> o = new TestSubscriber<>();
+        Subscription subscription = RxReceiver.receives(application, intentFilter).subscribe(o);
+        o.assertValues();
 
-        Intent barbaz = new Intent("test").putExtra("bar", "baz");
-        context.sendBroadcast(barbaz);
-        tester.assertValues(foobar, barbaz);
+        Intent intent1 = new Intent("test_action").putExtra("foo", "bar");
+        application.sendBroadcast(intent1);
+        o.assertValues(intent1);
 
-        Intent nullIntent = new Intent("test_null").putExtra("bar", "baz");
-        context.sendBroadcast(nullIntent);
-        tester.assertValues(foobar, barbaz);
+        Intent intent2 = new Intent("test_action").putExtra("bar", "baz");
+        application.sendBroadcast(intent2);
+        o.assertValues(intent1, intent2);
 
-        context.sendBroadcast(barbaz);
-        tester.assertValues(foobar, barbaz, barbaz);
+        Intent intent3 = new Intent("test_action_ignored");
+        application.sendBroadcast(intent3);
+        o.assertValues(intent1, intent2);
+
+        Intent intent4 = new Intent("test_action").putExtra("bar", "baz");
+        subscription.unsubscribe();
+        application.sendBroadcast(intent4);
+        o.assertValues(intent1, intent2);
     }
 }
