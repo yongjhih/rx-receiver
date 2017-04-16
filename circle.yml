@@ -16,7 +16,7 @@ test:
   override:
     - ./gradlew test --console=plain
   post:
-    - ./gradlew jacocoTestReport
+    - ./gradlew mergeCoverageReport
     - bash <(curl -s https://codecov.io/bash)
     # copy test report for Circle CI to display
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
