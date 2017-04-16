@@ -20,7 +20,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
-import org.assertj.core.api.ThrowableAssert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -29,32 +28,9 @@ import org.robolectric.annotation.Config;
 
 import io.reactivex.observers.TestObserver;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Java6Assertions.fail;
-
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
 public class RxReceiverLocalTest {
-    @Test
-    public void testReceivesNull() {
-        //assertThatThrownBy(new ThrowableAssert.ThrowingCallable() {
-        //    @Override
-        //    public void call() throws Throwable {
-        //        RxReceiver.receives(null, null);
-        //    }
-        //}).isInstanceOf(NullPointerException.class);
-
-        //try {
-        //    RxReceiver.receives(null, null);
-        //    fail("No NPE thrown");
-        //} catch (Throwable e) {
-        //    assertThat(e).isInstanceOf(NullPointerException.class);
-        //}
-
-        RxReceiverLocal.receives(null, null).test().assertError(NullPointerException.class);
-    }
-
     @Test
     public void test() {
         IntentFilter intentFilter = new IntentFilter("test");

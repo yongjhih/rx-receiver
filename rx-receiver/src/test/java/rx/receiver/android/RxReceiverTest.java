@@ -28,22 +28,9 @@ import org.robolectric.annotation.Config;
 import rx.Subscription;
 import rx.observers.TestSubscriber;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
 public class RxReceiverTest {
-    @Test public void createWithNullThrows() {
-        try {
-            //noinspection ResourceType
-            RxReceiver.receives(null, null);
-            fail();
-        } catch (NullPointerException e) {
-            assertThat(e).hasMessage("context == null");
-        }
-    }
-
     @Test public void subscribe() {
         IntentFilter intentFilter = new IntentFilter("test_action");
         Application application = RuntimeEnvironment.application;
