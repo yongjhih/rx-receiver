@@ -1,5 +1,6 @@
 # RxReceiver
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-rx--receiver-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/5602)
 [![CircleCI](https://circleci.com/gh/yongjhih/rx-receiver.svg?style=shield)](https://circleci.com/gh/yongjhih/rx-receiver)
 [![codecov](https://codecov.io/gh/yongjhih/rx-receiver/branch/master/graph/badge.svg)](https://codecov.io/gh/yongjhih/rx-receiver)
 
