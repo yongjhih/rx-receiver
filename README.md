@@ -8,8 +8,8 @@ RxJava1/2 for Android BroadcastReceiver. It's easier to extend for that based on
 Who extend:
 
 * [RxNet](https://github.com/yongjhih/rx-net) (including RxConnectivity/RxWifi)
-* RxTelephony
-* RxBattery
+* [RxTelephony](https://github.com/yongjhih/rx-telephony)
+* [RxBattery](https://github.com/yongjhih/rx-battery)
 
 ## Usage
 
