@@ -23,7 +23,7 @@ RxReceiver.receives(context, intentFilter).subscribe();
 rx2-receiver-kotlin:
 
 ```kt
-intentFilter.receives(context).subscribe()
+context.receives(intentFilter).subscribe()
 ```
 
 rx2-receiver-local (v4):
@@ -35,7 +35,7 @@ RxReceiverLocal.receives(context, intentFilter).subscribe();
 rx2-receiver-local-kotlin (v4):
 
 ```kt
-intentFilter.receivesLocal(context).subscribe()
+context.receivesLocal(intentFilter).subscribe()
 ```
 
 ## Installation
